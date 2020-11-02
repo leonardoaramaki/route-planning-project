@@ -27,6 +27,24 @@ static std::optional<std::vector<std::byte>> ReadFile(const std::string &path)
     return std::move(contents);
 }
 
+bool valid_input(float get_input) {
+    return get_input >= 0 && get_input <= 100;
+}
+
+void get_input(float& value, const std::string message) {
+    bool invalid = false;
+    do {
+        if (invalid) {
+            std::cout << "Please enter a number between 0 and 100." << std::endl;
+        }
+        std::cin.clear();
+        std::cout << message;
+        std::cin >> value;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        invalid = std::cin.fail() || !valid_input(value);
+    } while (invalid);
+}
+
 int main(int argc, const char **argv)
 {    
     std::string osm_data_file = "";
@@ -53,14 +71,22 @@ int main(int argc, const char **argv)
     }
     
     // TODO 1: Declare floats `start_x`, `start_y`, `end_x`, and `end_y` and get
-    // user input for these values using std::cin. Pass the user input to the
+    // user get_input for these values using std::cin. Pass the user get_input to the
     // RoutePlanner object below in place of 10, 10, 90, 90.
+    float start_x = 0;
+    float start_y = 0;
+    float end_x = 0;
+    float end_y = 0;
+    get_input(start_x, "Enter starting X [0..100]: ");
+    get_input(start_y, "Enter starting Y [0..100]: ");
+    get_input(end_x, "Enter ending X [0..100]: ");
+    get_input(end_y, "Enter ending Y [0..100]: ");
 
     // Build Model.
     RouteModel model{osm_data};
 
     // Create RoutePlanner object and perform A* search.
-    RoutePlanner route_planner{model, 10, 10, 90, 90};
+    RoutePlanner route_planner{model, start_x, start_y, end_x, end_y};
     route_planner.AStarSearch();
 
     std::cout << "Distance: " << route_planner.GetDistance() << " meters. \n";
