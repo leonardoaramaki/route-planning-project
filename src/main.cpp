@@ -35,12 +35,12 @@ void get_input(float& value, const std::string message) {
     bool invalid = false;
     do {
         if (invalid) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Please enter a number between 0 and 100." << std::endl;
         }
-        std::cin.clear();
         std::cout << message;
         std::cin >> value;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         invalid = std::cin.fail() || !valid_input(value);
     } while (invalid);
 }
